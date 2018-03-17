@@ -7,7 +7,6 @@ def corner(i, j):
 def withinBounds(i, j):
     return (0 <= i < BOARD_SIZE) and (0 <= j < BOARD_SIZE)
 
-
 class GameState:
     #   sets of whitePieces and blackPieces
     #   list of prevMoves, construct from parent

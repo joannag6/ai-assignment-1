@@ -242,11 +242,14 @@ int checkJumpLeft(int i, int j, char board[8][8]){
 	if (outOfBounds(i,j-2)){
 		return 0; 
 	}
-	//if not out of bounds, 
-	// if piece on left. 
-	// we can jump. 
-	if(checkPiecePresence(board[i][j-1])){
-		return 1; 
+	// if target is empty. 
+	if(board[i][j-2]=='-'){
+		//if not out of bounds, 
+		// if piece on left. 
+		// we can jump. 
+		if(checkPiecePresence(board[i][j-1])){
+			return 1; 
+		}
 	}
 	return 0;
 }
