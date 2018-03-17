@@ -75,5 +75,25 @@ if command == 'Moves':
 elif command == 'Massacre':
     # do massacre stuff
     print('massacre')
+
+    # define class GameState
+    #   sets of whitePieces and blackPieces
+
+    # set startState
+    # moveSequence stack [((x1, y1), (x2, y2))]
+    # visited = set(GameStates)
+    # to_visit stack = [startState]
+    # while to_visit:
+    #   currentState = to_visit.pop() -- gets the head
+    #   add currentState to visitedStates set()
+    #   generate childStates (by using calcMoves on each whitePiece)
+    #       each move is a separate childState
+    #   for each childState, check if any pieces got eaten - removeEatenPieces()
+    #   if num(whitePieces) decreases, remove that childStates
+    #   check if in visitedStates - remove childState
+    #   check if GoalState (num(blackPieces) = 0)
+
+    # return moveSequence (prettified)
+
 else:
     print("Please enter a valid command (ie. 'Moves', 'Massacre')")
