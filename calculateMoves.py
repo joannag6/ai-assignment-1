@@ -84,8 +84,6 @@ def setUpBoard():
 
 # Function that calculates the total number of moves, then prints them to stdout
 def calcTotalMoves():
-    movementService = Movement(startState)
-
     whiteMoves = 0
     blackMoves = 0
 
@@ -119,6 +117,7 @@ def massacre():
 
 
 startState = GameState(set(), set(), [])
+movementService = Movement(startState)
 
 setUpBoard()
 
