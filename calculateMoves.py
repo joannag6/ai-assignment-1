@@ -1,11 +1,52 @@
 BOARD_SIZE = 8
 
+
 def corner(i, j):
-    corner_coords = {0, BOARD_SIZE-1}
+    corner_coords = {0, BOARD_SIZE - 1}
     return i in corner_coords and j in corner_coords
+
 
 def withinBounds(i, j):
     return (0 <= i < BOARD_SIZE) and (0 <= j < BOARD_SIZE)
+
+class Movement:
+    def __init__(self, state):
+        self.state = state
+
+    def updateState(self, newState):
+        self.state = newState
+
+    # returns list of possible moves
+    def calcMovesForCoord(self, coord):
+        i, j = coord
+        return [x for x in [self.canGoRight_(i, j), self.canGoLeft_(i, j), self.canGoUp_(i, j), self.canGoDown_(i, j)] if x]
+
+    def isEmpty_(self, i, j):
+        return (i, j) not in self.state.blackPieces and (i, j) not in self.state.whitePieces and not corner(i, j)
+
+    def canJumpRight_(self, i, j):
+        return (i, j + 2) if withinBounds(i, j + 2) and self.isEmpty_(i, j + 2) else None
+
+    def canJumpLeft_(self, i, j):
+        return (i, j - 2) if withinBounds(i, j - 2) and self.isEmpty_(i, j - 2) else None
+
+    def canJumpUp_(self, i, j):
+        return (i - 2, j) if withinBounds(i - 2, j) and self.isEmpty_(i - 2, j) else None
+
+    def canJumpDown_(self, i, j):
+        return (i + 2, j) if withinBounds(i + 2, j) and self.isEmpty_(i + 2, j) else None
+
+    def canGoRight_(self, i, j):
+        return (i, j + 1) if withinBounds(i, j + 1) and self.isEmpty_(i, j + 1) else self.canJumpRight_(i, j)
+
+    def canGoLeft_(self, i, j):
+        return (i, j - 1) if withinBounds(i, j - 1) and self.isEmpty_(i, j - 1) else self.canJumpLeft_(i, j)
+
+    def canGoUp_(self, i, j):
+        return (i - 1, j) if withinBounds(i - 1, j) and self.isEmpty_(i - 1, j) else self.canJumpUp_(i, j)
+
+    def canGoDown_(self, i, j):
+        return (i + 1, j) if withinBounds(i + 1, j) and self.isEmpty_(i + 1, j) else self.canJumpDown_(i, j)
 
 
 class GameState:
@@ -24,33 +65,6 @@ class GameState:
     def isEqual(self, otherGameState):
         return self.whitePieces == otherGameState.whitePieces and self.blackPieces == otherGameState.blackPieces
 
-    def isEmpty_(self, i, j):
-        return (i, j) not in self.blackPieces and (i, j) not in self.whitePieces and not corner(i, j)
-
-    def canJumpRight(self, i, j):
-        return (i,j+2) if withinBounds(i,j+2) and self.isEmpty_(i,j+2) else None
-
-    def canJumpLeft(self, i, j):
-        return (i,j-2) if withinBounds(i,j-2) and self.isEmpty_(i,j-2) else None
-
-    def canJumpUp(self, i, j):
-        return (i-2,j) if withinBounds(i-2,j) and self.isEmpty_(i-2,j) else None
-
-    def canJumpDown(self, i, j):
-        return (i+2,j) if withinBounds(i+2,j) and self.isEmpty_(i+2,j) else None
-
-    def canGoRight(self, i, j):
-        return (i,j+1) if withinBounds(i,j+1) and self.isEmpty_(i,j+1) else self.canJumpRight(i,j)
-
-    def canGoLeft(self, i, j):
-        return (i,j-1) if withinBounds(i,j-1) and self.isEmpty_(i,j-1) else self.canJumpLeft(i,j)
-
-    def canGoUp(self, i, j):
-        return (i-1,j) if withinBounds(i-1,j) and self.isEmpty_(i-1,j) else self.canJumpUp(i,j)
-
-    def canGoDown(self, i, j):
-        return (i+1,j) if withinBounds(i+1,j) and self.isEmpty_(i+1,j) else self.canJumpDown(i,j)
-
 def setUpBoard():
     blackPieces = set()
     whitePieces = set()
@@ -67,23 +81,23 @@ def setUpBoard():
 
     startState.updateSets(whitePieces, blackPieces)
 
-def calcMovesForCoord(coord): # TODO(return list of possible moves)
-    i, j = coord
-    return [x for x in [startState.canGoRight(i, j), startState.canGoLeft(i, j), startState.canGoUp(i, j), startState.canGoDown(i, j)] if x]
 
 # Function that calculates the total number of moves, then prints them to stdout
 def calcTotalMoves():
+    movementService = Movement(startState)
+
     whiteMoves = 0
     blackMoves = 0
 
-    #TODO(shouldn't need to pass in whiteMoves and blackMoves, might use class next time)
+    # TODO(shouldn't need to pass in whiteMoves and blackMoves, might use class next time)
     for whiteCoord in startState.whitePieces:
-        whiteMoves += len(calcMovesForCoord(whiteCoord))
+        whiteMoves += len(movementService.calcMovesForCoord(whiteCoord))
     for blackCoord in startState.blackPieces:
-        blackMoves += len(calcMovesForCoord(blackCoord))
+        blackMoves += len(movementService.calcMovesForCoord(blackCoord))
 
     print(whiteMoves)
     print(blackMoves)
+
 
 def massacre():
     # set startState
@@ -102,6 +116,7 @@ def massacre():
 
     # return moveSequence (prettified)
     print('yay massacre')
+
 
 startState = GameState(set(), set(), [])
 
