@@ -1,10 +1,14 @@
 class GameState:
+    #   sets of whitePieces and blackPieces
+    #   list of prevMoves, construct from parent
+
     def __init__(self, whitePieces, blackPieces, prevMoves):
         self.whitePieces = whitePieces
         self.blackPieces = blackPieces
         self.prevMoves = prevMoves
 
-    def
+    def isEqual(self, otherGameState):
+        return self.whitePieces == otherGameState.whitePieces and self.blackPieces == otherGameState.blackPieces
 
 BOARD_SIZE = 8
 blackPieces = set()
@@ -61,8 +65,6 @@ for i in range(BOARD_SIZE):
         elif char == '@':
             blackPieces.add((i, j))
 
-print(whitePieces, blackPieces)
-
 # determine if it's "Moves" or "Massacre")
 command = input()
 
@@ -79,18 +81,6 @@ def calculateTotalMoves(whiteMoves, blackMoves):
 
 def massacre():
 
-
-if command == 'Moves':
-    calculateTotalMoves(whiteMoves, blackMoves)
-
-elif command == 'Massacre':
-    # do massacre stuff
-    massacre()
-
-    # define class GameState
-    #   sets of whitePieces and blackPieces
-    #   list of prevMoves, construct from parent
-
     # set startState
     # moveSequence stack [((x1, y1), (x2, y2))]
     # visited = set(GameStates)
@@ -106,6 +96,14 @@ elif command == 'Massacre':
     #   check if GoalState (num(blackPieces) = 0)
 
     # return moveSequence (prettified)
+    print('yay massacre')
+
+if command == 'Moves':
+    calculateTotalMoves(whiteMoves, blackMoves)
+
+elif command == 'Massacre':
+    # do massacre stuff
+    massacre()
 
 else:
     print("Please enter a valid command (ie. 'Moves', 'Massacre')")
