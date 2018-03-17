@@ -1,3 +1,11 @@
+class GameState:
+    def __init__(self, whitePieces, blackPieces, prevMoves):
+        self.whitePieces = whitePieces
+        self.blackPieces = blackPieces
+        self.prevMoves = prevMoves
+
+    def
+
 BOARD_SIZE = 8
 blackPieces = set()
 whitePieces = set()
@@ -59,7 +67,7 @@ print(whitePieces, blackPieces)
 command = input()
 
 # Function that calculates the total number of moves, then prints them to stdout
-def doMoveStuff(whiteMoves, blackMoves):
+def calculateTotalMoves(whiteMoves, blackMoves):
     #TODO(shouldn't need to pass in whiteMoves and blackMoves, might use class next time)
     for whiteCoord in whitePieces:
         whiteMoves += len(calcMoves(whiteCoord))
@@ -69,15 +77,19 @@ def doMoveStuff(whiteMoves, blackMoves):
     print(whiteMoves)
     print(blackMoves)
 
+def massacre():
+
+
 if command == 'Moves':
-    doMoveStuff(whiteMoves, blackMoves)
+    calculateTotalMoves(whiteMoves, blackMoves)
 
 elif command == 'Massacre':
     # do massacre stuff
-    print('massacre')
+    massacre()
 
     # define class GameState
     #   sets of whitePieces and blackPieces
+    #   list of prevMoves, construct from parent
 
     # set startState
     # moveSequence stack [((x1, y1), (x2, y2))]
