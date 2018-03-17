@@ -1,5 +1,5 @@
 BOARD_SIZE = 8
-blackPieces = set() 
+blackPieces = set()
 whitePieces = set()
 whiteMoves = 0
 blackMoves = 0
@@ -58,7 +58,9 @@ print(whitePieces, blackPieces)
 # determine if it's "Moves" or "Massacre")
 command = input()
 
-if command == 'Moves':
+# Function that calculates the total number of moves, then prints them to stdout
+def doMoveStuff(whiteMoves, blackMoves):
+    #TODO(shouldn't need to pass in whiteMoves and blackMoves, might use class next time)
     for whiteCoord in whitePieces:
         whiteMoves += len(calcMoves(whiteCoord))
     for blackCoord in blackPieces:
@@ -66,6 +68,10 @@ if command == 'Moves':
 
     print(whiteMoves)
     print(blackMoves)
+
+if command == 'Moves':
+    doMoveStuff(whiteMoves, blackMoves)
+
 elif command == 'Massacre':
     # do massacre stuff
     print('massacre')
