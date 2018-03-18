@@ -1,6 +1,6 @@
 BOARD_SIZE = 8
 
-
+#changed for the luls. 
 def corner(i, j):
     corner_coords = {0, BOARD_SIZE - 1}
     return i in corner_coords and j in corner_coords
