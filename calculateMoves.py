@@ -155,7 +155,7 @@ def printSequence(moveSequence):
         print(str(x) + ' -> ' + str(y))
 
 
-def massacre(startState):
+def dfs(startState, maxDepth):
     numWhite = len(startState.whitePieces)
     visited = {startState}
     to_visit = [startState]
@@ -165,7 +165,10 @@ def massacre(startState):
         # Check if already reached goal state!
         if massacreGoalCheck(currentState):
             printSequence(currentState.prevMoves)
-            return
+            return True
+
+        if len(currentState.prevMoves) == maxDepth:
+            continue
 
         movementService.updateState(currentState)
         visited.add(currentState)
@@ -199,6 +202,15 @@ def massacre(startState):
                     and newGameState not in visited):
                     to_visit.append(newGameState)
                     visited.add(newGameState)
+    return False
+
+def massacre(startState):
+    depth = 1
+    while True:
+        if dfs(startState, depth):
+            break
+        else:
+            depth += 1
 
 def isEnemy(enemyPieces, coordinate):
     i, j = coordinate
