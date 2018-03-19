@@ -1,9 +1,9 @@
-# CONSTANTS
-#-----------------------------------------------------------------------------
+# TODO(Use proper docstring for documentation)
+# CONSTANTS ------------------------------------------------------------------
 BOARD_SIZE = 8
+# ----------------------------------------------------------------------------
 
-# CLASS DEFINITIONS BEGIN
-#-----------------------------------------------------------------------------
+# CLASS DEFINITIONS ----------------------------------------------------------
 class Movement:
     def __init__(self, state):
         self.state = state
@@ -30,9 +30,10 @@ class Movement:
                 and not corner(i, j))
 
     # series of functions that checks if a piece can move or jump.
-    # canGo functions check if the adjacent cell is empty and within bounds, then tries tso move.
-    # if not empty, it is a piece or a corner. We then call canJump functions to see if
-    # we can perform a jump, the target cell for jump is empty and within bounds.
+    # canGo functions check if the adjacent cell is empty and within bounds.
+    # if not empty, it is a piece or a corner. We then call canJump functions
+    # to see if player can jump - the target cell for jump is empty and within
+    # bounds.
     def canJumpRight_(self, i, j):
         if withinBounds(i+2, j) and self.isEmpty_(i+2, j):
             return (i+2, j )
@@ -71,8 +72,8 @@ class Movement:
 
 
 class GameState:
-    #   sets of whitePieces and blackPieces
-    #   list of prevMoves, construct from parent
+    # sets of whitePieces and blackPieces
+    # list of prevMoves, construct from parent
 
     def __init__(self, whitePieces, blackPieces, prevMoves):
         self.whitePieces = whitePieces
@@ -94,13 +95,9 @@ class GameState:
         self.blackPieces = newBlackSet
         self.blackSorted = tuple(sorted(newBlackSet))
 
-#-----------------------------------------------------------------------------
-# CLASS DEFINITIONS END.
+# ----------------------------------------------------------------------------
 
-
-
-# FUNCTION DEFINITIONS BEGIN
-#-----------------------------------------------------------------------------
+# FUNCTION DEFINITIONS -------------------------------------------------------
 def corner(i, j):
     corner_coords = {0, BOARD_SIZE - 1}
     return i in corner_coords and j in corner_coords
@@ -108,6 +105,7 @@ def corner(i, j):
 
 def withinBounds(i, j):
     return (0 <= i < BOARD_SIZE) and (0 <= j < BOARD_SIZE)
+
 
 
 def setUpBoard():
@@ -124,21 +122,36 @@ def setUpBoard():
             elif char == '@':
                 blackPieces.add((j, i))
 
-    startState.updateSets(whitePieces, blackPieces)
+def isEnemy(enemyPieces, coordinate):
+    i, j = coordinate
+    return withinBounds(i, j) and (coordinate in enemyPieces or corner(i, j))
 
 
-# Function that calculates the total number of moves, then prints them to stdout
-def calcTotalMoves():
-    whiteMoves = 0
-    blackMoves = 0
+def canEat(enemyPieces, side1, side2):
+    return isEnemy(enemyPieces, side1) and isEnemy(enemyPieces, side2)
 
-    for whiteCoord in startState.whitePieces:
-        whiteMoves += len(movementService.calcMovesForCoord(whiteCoord))
-    for blackCoord in startState.blackPieces:
-        blackMoves += len(movementService.calcMovesForCoord(blackCoord))
 
-    print(whiteMoves)
-    print(blackMoves)
+def removeEatenPieces(ownPieces, enemyPieces):
+    toRemove = []
+    for piece in ownPieces:
+        i,j = piece
+        down = (i,j+1)
+        up = (i,j-1)
+        left = (i-1,j)
+        right = (i+1,j)
+
+        # check if piece can be eaten from up and down / left and right
+        # by checking if within bounds and if they are corner or white.
+        if canEat(enemyPieces, up, down) or canEat(enemyPieces, left, right):
+            toRemove.append(piece)
+    for pieceToRemove in toRemove:
+        ownPieces.remove(pieceToRemove)
+    return ownPieces
+
+
+# Check if we are in a goal state (no more black pieces) for massacre
+def massacreGoalCheck(gameState):
+    return (len(gameState.blackPieces) == 0)
 
 
 def debugPrintState(state):
@@ -155,7 +168,7 @@ def printSequence(moveSequence):
         print(str(x) + ' -> ' + str(y))
 
 
-def massacre(startState):
+def dfs(startState, maxDepth):
     numWhite = len(startState.whitePieces)
     visited = {startState}
     to_visit = [startState]
@@ -165,7 +178,10 @@ def massacre(startState):
         # Check if already reached goal state!
         if massacreGoalCheck(currentState):
             printSequence(currentState.prevMoves)
-            return
+            return True
+
+        if len(currentState.prevMoves) == maxDepth:
+            continue
 
         movementService.updateState(currentState)
         visited.add(currentState)
@@ -199,41 +215,51 @@ def massacre(startState):
                     and newGameState not in visited):
                     to_visit.append(newGameState)
                     visited.add(newGameState)
-
-def isEnemy(enemyPieces, coordinate):
-    i, j = coordinate
-    return withinBounds(i, j) and (coordinate in enemyPieces or corner(i, j))
+    return False
 
 
-def canEat(enemyPieces, side1, side2):
-    return isEnemy(enemyPieces, side1) and isEnemy(enemyPieces, side2)
+# Set up initial GameState according to input
+def setUpBoard():
+    blackPieces = set()
+    whitePieces = set()
+    # read from input and generate board
+    for i in range(BOARD_SIZE):
+        # add row to board
+        rowInput = input().split()
+        for j in range(BOARD_SIZE):
+            char = rowInput[j]
+            if char == 'O':
+                whitePieces.add((i, j))
+            elif char == '@':
+                blackPieces.add((i, j))
+
+    startState.updateSets(whitePieces, blackPieces)
 
 
-def removeEatenPieces(ownPieces, enemyPieces):
-    toRemove = []
-    for piece in ownPieces:
-        i,j = piece
-        down = (i,j+1)
-        up = (i,j-1)
-        left = (i-1,j)
-        right = (i+1,j)
+# Prints the total number of moves for both players
+def calcTotalMoves():
+    whiteMoves = 0
+    blackMoves = 0
 
-        # check if piece can be eaten from up and down / left and right
-        # by checking if within bounds and if they are corner or white.
-        if canEat(enemyPieces, up, down) or canEat(enemyPieces, left, right):
-            toRemove.append(piece)
-    for pieceToRemove in toRemove:
-        ownPieces.remove(pieceToRemove)
-    return ownPieces
+    for whiteCoord in startState.whitePieces:
+        whiteMoves += len(movementService.calcMovesForCoord(whiteCoord))
+    for blackCoord in startState.blackPieces:
+        blackMoves += len(movementService.calcMovesForCoord(blackCoord))
+
+    print(whiteMoves)
+    print(blackMoves)
 
 
-# Function to check if we are in a goal state for massacre
-def massacreGoalCheck(gameState):
-    # If the state we send has no black pieces, we are in goal state.
-    return (len(gameState.blackPieces) == 0)
+# Print sequence of moves that will lead to eating all black pieces
+def massacre(startState):
+    depth = 1
+    while True:
+        if dfs(startState, depth): # found a solution!
+            break
+        else:
+            depth += 1
 
-# FUNCTION DEFINITIONS END
-#-----------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 
 startState = GameState(set(), set(), [])
 movementService = Movement(startState)
