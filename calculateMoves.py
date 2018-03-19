@@ -166,9 +166,9 @@ def debugPrintState(state):
 def printBoard(state):
     print("Printing board")
     board = [[ '-' for y in range(8) ] for x in range(8)]
-    for i,j in state.whiteSorted:
+    for j,i in state.whiteSorted:
         board[i][j] = 'O'
-    for i,j in state.blackSorted:
+    for j,i in state.blackSorted:
         board[i][j] = '@'
     for row in board:
         print(row)
@@ -191,12 +191,6 @@ def dfs(startState, maxDepth):
     while to_visit:
         currentState = to_visit.pop()
 
-        if len(currentState.prevMoves) == maxDepth:
-            continue
-
-        print(len(currentState.prevMoves), "*******************************************")
-        printBoard(currentState)
-
         movementService.updateState(currentState)
         visited.add(currentState)
 
@@ -206,7 +200,6 @@ def dfs(startState, maxDepth):
             # GameState node that results from that move with updated white set,
             # black set and prevMoves list.
             moveList = movementService.calcMovesForCoord(whitePiece)
-            print([(whitePiece, move) for move in moveList])
 
             for move in moveList:
                 newWhitePieces = currentState.whitePieces.copy()
@@ -231,10 +224,10 @@ def dfs(startState, maxDepth):
 
                 # If number of whitepieces decreased, it's not a good move so
                 # don't add to to_visit stack. Also check if newnode has
-                # already been visited state.
+                # already been visited state and the new node is below maxdepth
                 if (len(newGameState.whitePieces) == numWhite
-                    and newGameState not in visited):
-                    print("added new state")
+                        and newGameState not in visited
+                        and len(currentState.prevMoves) < maxDepth):
                     to_visit.append(newGameState)
                     visited.add(newGameState)
     return False
@@ -297,6 +290,5 @@ if command == 'Moves':
 elif command == 'Massacre':
     # do massacre stuff
     massacre(startState)
-    print("massacre complete")
 else:
     print("Please enter a valid command (ie. 'Moves', 'Massacre')")
