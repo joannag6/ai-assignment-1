@@ -163,6 +163,16 @@ def debugPrintState(state):
     print(state.prevMoves)
 
 
+def printBoard(state):
+    print("Printing board")
+    board = [[ '-' for y in range(8) ] for x in range(8)]
+    for j,i in state.whiteSorted:
+        board[i][j] = 'O'
+    for j,i in state.blackSorted:
+        board[i][j] = '@'
+    for row in board:
+        print(row)
+
 def printSequence(moveSequence):
     for (x, y) in moveSequence:
         print(str(x) + ' -> ' + str(y))
@@ -172,26 +182,25 @@ def dfs(startState, maxDepth):
     numWhite = len(startState.whitePieces)
     visited = {startState}
     to_visit = [startState]
+
+    # Check if already reached goal state!
+    if massacreGoalCheck(startState):
+        printSequence(startState.prevMoves)
+        return True
+
     while to_visit:
         currentState = to_visit.pop()
-
-        # Check if already reached goal state!
-        if massacreGoalCheck(currentState):
-            printSequence(currentState.prevMoves)
-            return True
-
-        if len(currentState.prevMoves) == maxDepth:
-            continue
 
         movementService.updateState(currentState)
         visited.add(currentState)
 
         # Generate childStates (by using calcMoves on each whitePiece)
-        for whitePiece in currentState.whitePieces:
+        for whitePiece in currentState.whiteSorted:
             # Get all moves that piece can do, then for each move generate the
             # GameState node that results from that move with updated white set,
             # black set and prevMoves list.
             moveList = movementService.calcMovesForCoord(whitePiece)
+
             for move in moveList:
                 newWhitePieces = currentState.whitePieces.copy()
                 newBlackPieces = currentState.blackPieces.copy()
@@ -208,11 +217,17 @@ def dfs(startState, maxDepth):
 
                 newGameState = GameState(newWhitePieces, newBlackPieces, newPrevMoves)
 
+                # Check if already reached goal state!
+                if massacreGoalCheck(newGameState):
+                    printSequence(newGameState.prevMoves)
+                    return True
+
                 # If number of whitepieces decreased, it's not a good move so
                 # don't add to to_visit stack. Also check if newnode has
-                # already been visited state.
+                # already been visited state and the new node is below maxdepth
                 if (len(newGameState.whitePieces) == numWhite
-                    and newGameState not in visited):
+                        and newGameState not in visited
+                        and len(currentState.prevMoves) < maxDepth):
                     to_visit.append(newGameState)
                     visited.add(newGameState)
     return False
@@ -275,6 +290,5 @@ if command == 'Moves':
 elif command == 'Massacre':
     # do massacre stuff
     massacre(startState)
-    print("massacre complete")
 else:
     print("Please enter a valid command (ie. 'Moves', 'Massacre')")
