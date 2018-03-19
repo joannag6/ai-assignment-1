@@ -229,9 +229,9 @@ def setUpBoard():
         for j in range(BOARD_SIZE):
             char = rowInput[j]
             if char == 'O':
-                whitePieces.add((i, j))
+                whitePieces.add((j, i))
             elif char == '@':
-                blackPieces.add((i, j))
+                blackPieces.add((j, i))
 
     startState.updateSets(whitePieces, blackPieces)
 
