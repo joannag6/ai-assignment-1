@@ -35,39 +35,39 @@ class Movement:
     # to see if player can jump - the target cell for jump is empty and within
     # bounds.
     def canJumpRight_(self, i, j):
-        if withinBounds(i, j + 2) and self.isEmpty_(i, j + 2):
-            return (i, j + 2)
+        if withinBounds(i+2, j) and self.isEmpty_(i+2, j):
+            return (i+2, j )
 
     def canJumpLeft_(self, i, j):
-        if withinBounds(i, j - 2) and self.isEmpty_(i, j - 2):
-            return (i, j - 2)
+        if withinBounds(i-2, j ) and self.isEmpty_(i-2, j):
+            return (i-2, j )
 
     def canJumpUp_(self, i, j):
-        if withinBounds(i - 2, j) and self.isEmpty_(i - 2, j):
-            return (i - 2, j)
+        if withinBounds(i , j-2) and self.isEmpty_(i, j-2):
+            return (i, j-2)
 
     def canJumpDown_(self, i, j):
-        if withinBounds(i + 2, j) and self.isEmpty_(i + 2, j):
-            return (i + 2, j)
+        if withinBounds(i, j+2) and self.isEmpty_(i , j+2):
+            return (i, j+2)
 
     def canGoRight_(self, i, j):
-        if withinBounds(i, j + 1) and self.isEmpty_(i, j + 1):
-            return (i, j + 1)
+        if withinBounds(i+1, j) and self.isEmpty_(i+1, j):
+            return (i+1, j)
         return self.canJumpRight_(i, j)
 
     def canGoLeft_(self, i, j):
-        if withinBounds(i, j - 1) and self.isEmpty_(i, j - 1):
-            return (i, j - 1)
+        if withinBounds(i-1, j ) and self.isEmpty_(i-1, j ):
+            return (i-1, j)
         return self.canJumpLeft_(i, j)
 
     def canGoUp_(self, i, j):
-        if withinBounds(i - 1, j) and self.isEmpty_(i - 1, j):
-            return (i - 1, j)
+        if withinBounds(i , j-1) and self.isEmpty_(i , j-1):
+            return (i , j-1)
         return self.canJumpUp_(i, j)
 
     def canGoDown_(self, i, j):
-        if withinBounds(i + 1, j) and self.isEmpty_(i + 1, j):
-            return (i + 1, j)
+        if withinBounds(i , j+1) and self.isEmpty_(i , j+1):
+            return (i , j+1)
         return self.canJumpDown_(i, j)
 
 
@@ -106,6 +106,21 @@ def corner(i, j):
 def withinBounds(i, j):
     return (0 <= i < BOARD_SIZE) and (0 <= j < BOARD_SIZE)
 
+
+
+def setUpBoard():
+    blackPieces = set()
+    whitePieces = set()
+    # read from input and generate board
+    for i in range(BOARD_SIZE):
+        # add row to board
+        rowInput = input().split()
+        for j in range(BOARD_SIZE):
+            char = rowInput[j]
+            if char == 'O':
+                whitePieces.add((j, i))
+            elif char == '@':
+                blackPieces.add((j, i))
 
 def isEnemy(enemyPieces, coordinate):
     i, j = coordinate
@@ -236,9 +251,9 @@ def setUpBoard():
         for j in range(BOARD_SIZE):
             char = rowInput[j]
             if char == 'O':
-                whitePieces.add((i, j))
+                whitePieces.add((j, i))
             elif char == '@':
-                blackPieces.add((i, j))
+                blackPieces.add((j, i))
 
     startState.updateSets(whitePieces, blackPieces)
 
