@@ -34,39 +34,39 @@ class Movement:
     # if not empty, it is a piece or a corner. We then call canJump functions to see if
     # we can perform a jump, the target cell for jump is empty and within bounds.
     def canJumpRight_(self, i, j):
-        if withinBounds(i, j + 2) and self.isEmpty_(i, j + 2):
-            return (i, j + 2)
+        if withinBounds(i+2, j) and self.isEmpty_(i+2, j):
+            return (i+2, j )
 
     def canJumpLeft_(self, i, j):
-        if withinBounds(i, j - 2) and self.isEmpty_(i, j - 2):
-            return (i, j - 2)
+        if withinBounds(i-2, j ) and self.isEmpty_(i-2, j):
+            return (i-2, j )
 
     def canJumpUp_(self, i, j):
-        if withinBounds(i - 2, j) and self.isEmpty_(i - 2, j):
-            return (i - 2, j)
+        if withinBounds(i , j-2) and self.isEmpty_(i, j-2):
+            return (i, j-2)
 
     def canJumpDown_(self, i, j):
-        if withinBounds(i + 2, j) and self.isEmpty_(i + 2, j):
-            return (i + 2, j)
+        if withinBounds(i, j+2) and self.isEmpty_(i , j+2):
+            return (i, j+2)
 
     def canGoRight_(self, i, j):
-        if withinBounds(i, j + 1) and self.isEmpty_(i, j + 1):
-            return (i, j + 1)
+        if withinBounds(i+1, j) and self.isEmpty_(i+1, j):
+            return (i+1, j)
         return self.canJumpRight_(i, j)
 
     def canGoLeft_(self, i, j):
-        if withinBounds(i, j - 1) and self.isEmpty_(i, j - 1):
-            return (i, j - 1)
+        if withinBounds(i-1, j ) and self.isEmpty_(i-1, j ):
+            return (i-1, j)
         return self.canJumpLeft_(i, j)
 
     def canGoUp_(self, i, j):
-        if withinBounds(i - 1, j) and self.isEmpty_(i - 1, j):
-            return (i - 1, j)
+        if withinBounds(i , j-1) and self.isEmpty_(i , j-1):
+            return (i , j-1)
         return self.canJumpUp_(i, j)
 
     def canGoDown_(self, i, j):
-        if withinBounds(i + 1, j) and self.isEmpty_(i + 1, j):
-            return (i + 1, j)
+        if withinBounds(i , j+1) and self.isEmpty_(i , j+1):
+            return (i , j+1)
         return self.canJumpDown_(i, j)
 
 
@@ -120,9 +120,9 @@ def setUpBoard():
         for j in range(BOARD_SIZE):
             char = rowInput[j]
             if char == 'O':
-                whitePieces.add((i, j))
+                whitePieces.add((j, i))
             elif char == '@':
-                blackPieces.add((i, j))
+                blackPieces.add((j, i))
 
     startState.updateSets(whitePieces, blackPieces)
 
