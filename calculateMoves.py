@@ -272,7 +272,7 @@ def massacre(startState):
         if dfs(startState, depth): # found a solution!
             break
         else:
-            depth += 2
+            depth += 1
 
 # ----------------------------------------------------------------------------
 
