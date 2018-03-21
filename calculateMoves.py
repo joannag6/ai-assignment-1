@@ -178,7 +178,7 @@ def massacreGoalCheck(gameState):
     return (len(gameState.blackPieces) == 0)
 
 
-def setUpBoard():
+def setUpBoard(startState):
     """Sets up StartState according to the input."""
     blackPieces = set()
     whitePieces = set()
@@ -201,7 +201,7 @@ def printSequence(moveSequence):
         print(str(x) + ' -> ' + str(y))
 
 
-def dfs(startState, maxDepth):
+def dfs(startState, movementService, maxDepth):
     """Performs DFS, generating new child states until goal state found."""
     numWhite = len(startState.whitePieces)
     visited = {startState}
@@ -257,7 +257,7 @@ def dfs(startState, maxDepth):
     return False
 
 
-def calcTotalMoves():
+def calcTotalMoves(startState, movementService):
     """Prints the total number of moves for both players."""
     whiteMoves = 0
     blackMoves = 0
@@ -271,11 +271,11 @@ def calcTotalMoves():
     print(blackMoves)
 
 
-def massacre(startState):
+def massacre(startState, movementService):
     """Print sequence of moves that will lead to eating all black pieces."""
     depth = 0
     while True:
-        if dfs(startState, depth): # found a solution!
+        if dfs(startState, movementService, depth): # found a solution!
             break
         else:
             depth += 1
@@ -301,19 +301,23 @@ def printBoard(state):
         print(row)
 #______________________________________________________________________________
 
+def main():
+    startState = GameState(set(), set(), [])
+    movementService = Movement(startState)
+    setUpBoard(startState)
 
-startState = GameState(set(), set(), [])
-movementService = Movement(startState)
-setUpBoard()
+    # determine if it's "Moves" or "Massacre"
+    command = input()
 
-# determine if it's "Moves" or "Massacre"
-command = input()
+    if command == 'Moves':
+        # calculate available moves for each player
+        calcTotalMoves(startState, movementService)
+    elif command == 'Massacre':
+        # print out sequence of moves which leads to massacre of enemy pieces
+        massacre(startState, movementService)
+    else:
+        print("Please enter a valid command (ie. 'Moves', 'Massacre')")
 
-if command == 'Moves':
-    # calculate available moves for each player
-    calcTotalMoves()
-elif command == 'Massacre':
-    # print out sequence of moves which leads to massacre of enemy pieces
-    massacre(startState)
-else:
-    print("Please enter a valid command (ie. 'Moves', 'Massacre')")
+
+if __name__ == "__main__":
+    main()
