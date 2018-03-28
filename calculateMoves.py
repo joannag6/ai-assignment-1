@@ -1,4 +1,8 @@
-"""COMP30024 Artificial Intelligence Project Part A (2018 Sem 2)
+"""COMP30024 Artificial Intelligence Project Part A (2018 Sem 1)
+
+Authors:
+Jia Shun LOW (743436)
+Joanna Grace Cho Ern LEE (710094)
 
 This module carries out two calculations:
     - The number of available moves for each player
@@ -280,26 +284,6 @@ def massacre(startState, movementService):
         else:
             depth += 1
 
-#remove before submit__________________________________________________________
-def debugPrintState(state):
-    print("the following is white pieces")
-    print(state.whitePieces)
-    print("the following is blackPieces")
-    print(state.blackPieces)
-    print("movelist")
-    print(state.prevMoves)
-
-
-def printBoard(state):
-    print("Printing board")
-    board = [[ '-' for y in range(8) ] for x in range(8)]
-    for j,i in state.whiteSorted:
-        board[i][j] = 'O'
-    for j,i in state.blackSorted:
-        board[i][j] = '@'
-    for row in board:
-        print(row)
-#______________________________________________________________________________
 
 def main():
     startState = GameState(set(), set(), [])
